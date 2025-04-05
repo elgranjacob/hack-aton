@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Datos de Rutas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="container py-4">
+
+  <h2 class="text-center mb-4">📋 Tabla de Rutas</h2>
+
+  <!-- Botones -->
+  <div class="mb-3">
+    <button class="btn btn-success" onclick="exportarExcel()">📥 Exportar a Excel</button>
+  </div>
+
+  <!-- Filtro por fecha -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <input type="date" id="filtroFecha" class="form-control" onchange="cargarRutas()">
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <table id="tablaRutas" class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>KM Inicial</th>
+        <th>KM Final</th>
+        <th>Gasolina Inicial</th>
+        <th>Gasolina Final</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Gráfico -->
+  <canvas id="grafico" height="100"></canvas>
+
+  <script>
+    // Conexión Supabase
+    const supabase = window.supabase.createClient(
+      'https://lrhhohwqhaoagufdqrrr.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxyaGhvaHdxaGFvYWd1ZmRxcnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4NTAxNDMsImV4cCI6MjA1OTQyNjE0M30.vc9Kx39q8nqa3cVbfSTPy4Lfah3XRAlxMKMVndxuzOk'
+    );
+
+    let rutasGlobales = [];
+
+    async function cargarRutas() {
+      const fechaFiltro = document.getElementById("filtroFecha").value;
+      let query = supabase.from("rutas").select("*");
+
+      if (fechaFiltro) {
+        query = query.eq("fecha", fechaFiltro);
+      }
+
+      const { data, error } = await query.order('fecha', { ascending: false });
+
+      if (error) return alert("Error cargando datos: " + error.message);
+
+      rutasGlobales = data;
+      mostrarTabla(data);
+      graficar(data);
+    }
+
+    function mostrarTabla(data) {
+      const tbody = document.querySelector("#tablaRutas tbody");
+      tbody.innerHTML = "";
+
+      data.forEach(r => {
+        const fila = `
+          <tr>
+            <td>${r.fecha || ''}</td>
+            <td>${r.hora || ''}</td>
+            <td>${r.kilometraje_inicial || ''}</td>
+            <td>${r.kilometraje_final || ''}</td>
+            <td>${r.gasolina_inicial || ''}</td>
+            <td>${r.gasolina_final || ''}</td>
+          </tr>`;
+        tbody.innerHTML += fila;
+      });
+    }
+
+    function exportarExcel() {
+      if (rutasGlobales.length === 0) return alert("No hay datos para exportar.");
+      const ws = XLSX.utils.json_to_sheet(rutasGlobales);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Rutas");
+      XLSX.writeFile(wb, "rutas.xlsx");
+    }
+
+    function graficar(data) {
+      const ctx = document.getElementById("grafico").getContext("2d");
+      if (window.miGrafico) window.miGrafico.destroy();
+
+      const fechas = data.map(d => d.fecha + " " + d.hora);
+      const km = data.map(d => d.kilometraje_final - d.kilometraje_inicial);
+
+      window.miGrafico = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: fechas,
+          datasets: [{
+            label: "KM Recorridos",
+            data: km,
+            backgroundColor: "rgba(54, 162, 235, 0.6)"
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // Al cargar
+    cargarRutas();
+  </script>
+</body>
+</html>
