@@ -14,26 +14,24 @@
       background-color: #f0f2f5;
       font-family: 'Segoe UI', sans-serif;
     }
-
     .navbar-custom {
       background-color: #ffffff;
       box-shadow: 0 4px 8px rgba(0,0,0,0.05);
       padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
     .dashboard-content {
       padding: 2rem;
     }
-
     .btn {
       border-radius: 50px;
       font-weight: 500;
     }
-
     .form-section {
       display: none;
     }
-
     .card-custom {
       border-radius: 1rem;
       box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
@@ -41,7 +39,6 @@
       background-color: white;
       margin-bottom: 2rem;
     }
-
     .btn-close-gestion {
       float: right;
       font-size: 1.2rem;
@@ -49,11 +46,9 @@
       background: none;
       border: none;
     }
-
     #mensaje-exito {
       display: none;
     }
-
     .btn-ver-rutas {
       font-weight: 500;
       border-radius: 10px;
@@ -63,41 +58,26 @@
 </head>
 <body>
 
-  <nav class="navbar navbar-custom d-flex justify-content-between align-items-center">
+  <nav class="navbar navbar-custom">
     <div class="d-flex align-items-center gap-3">
       <a href="index.html"><img src="images/ICONO.png" alt="Logo Raven Vision" width="80" class="me-2"></a>
       <a href="#" class="btn btn-outline-primary"><i class="bi bi-folder-fill"></i> Proyectos</a>
       <a href="#" class="btn btn-outline-primary"><i class="bi bi-kanban-fill"></i> Plantillas</a>
       <a href="#" class="btn btn-outline-primary"><i class="bi bi-person-badge"></i> Cuenta</a>
     </div>
-    <div class="d-flex align-items-center gap-3">
+    <div class="navbar-user d-flex align-items-center gap-3">
+      <span><strong id="nombre-usuario">Cargando...</strong></span>
       <a href="tabla.html" class="btn btn-warning btn-ver-rutas shadow-sm">
         <i class="bi bi-map-fill"></i> Ver Rutas
       </a>
     </div>
   </nav>
-  
-  <!-- Perfil centrado -->
-  <div class="d-flex justify-content-center mt-4">
-    <div class="card p-3 shadow-sm text-center" style="border-radius: 1rem; width: 220px;">
-      <label for="profile-pic" class="d-flex flex-column align-items-center gap-2 mb-0 cursor-pointer">
-        <img id="profile-preview" src="https://via.placeholder.com/80" alt="Perfil" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
-        <input type="file" id="profile-pic" hidden accept="image/*" onchange="previewImage(event)">
-        <span><strong id="nombre-usuario">Cargando...</strong></span>
-      </label>
-    </div>
-  </div>
 
   <main class="container dashboard-content">
     <h2 class="mb-4 text-center">👑 Bienvenido, <span class="text-primary">Administrador Prime</span></h2>
 
-    <!-- Botón Ver Rutas -->
-    <div class="d-flex justify-content-end mb-4">
-
-    </div>
-
     <!-- Botones -->
-    <div class="d-flex flex-wrap gap-3 mb-4">
+    <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
       <button onclick="mostrarFormulario('resultados-flotilla')" class="btn btn-warning"><i class="bi bi-graph-up-arrow"></i> Flotilla</button>
       <button onclick="mostrarFormulario('resultados-vehiculos')" class="btn btn-info text-white"><i class="bi bi-truck-front"></i> Vehículos</button>
       <button onclick="mostrarFormulario('form-proyecto-container')" class="btn btn-primary"><i class="bi bi-journal-plus"></i> Proyecto</button>
@@ -189,17 +169,28 @@
       reader.readAsDataURL(event.target.files[0]);
     }
 
-    function mostrarFormulario(id) {
-      document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
-      document.getElementById("mensaje-exito").style.display = "none";
-      document.getElementById(id).style.display = "block";
-      if (id === 'gestion-flotillas') renderGraficaComparativa();
-      if (id === 'resultados-flotilla') renderGraficaResultadosFlotilla();
-      if (id === 'resultados-vehiculos') renderGraficaResultadosVehiculos();
-    }
-
     function cerrarSeccion(id) {
       document.getElementById(id).style.display = 'none';
+    }
+
+    // Función para mostrar la sección deseada y renderizar gráficos si es necesario
+    function mostrarFormulario(id) {
+      // Ocultar todas las secciones
+      const secciones = document.getElementsByClassName('form-section');
+      for (let i = 0; i < secciones.length; i++) {
+        secciones[i].style.display = 'none';
+      }
+      // Mostrar la sección seleccionada
+      document.getElementById(id).style.display = 'block';
+
+      // Renderizar gráficos según la sección mostrada
+      if (id === 'resultados-flotilla') {
+        renderGraficaResultadosFlotilla();
+      } else if (id === 'resultados-vehiculos') {
+        renderGraficaResultadosVehiculos();
+      } else if (id === 'gestion-flotillas') {
+        renderGraficaComparativa();
+      }
     }
 
     function mostrarMensaje(formId) {
