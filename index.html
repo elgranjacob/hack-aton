@@ -64,7 +64,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" href="#">
-        <img src="images/ICONO.png" alt="Logo Raven Vision" width="80" class="me-2">
+        <a href="index.html"><img src="images/ICONO.png" alt="Logo Raven Vision" width="80" class="me-2"></a>
         <span class="fw-bold fs-4 text-dark">Raven Vision</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -72,12 +72,9 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-center">
-          <li class="nav-item"><a class="nav-link text-dark" href="#">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#mapa">Ubicación</a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="#">Contacto</a></li>
           <li class="nav-item"><a class="btn btn-outline-primary me-2" href="login.html">Iniciar Sesión</a></li>
           <li class="nav-item"><a class="btn btn-primary" href="nuevosUsuarios.html">Registrar</a></li>
-          <li class="nav-item"><a class="btn btn-warning ms-2" href="tabla.html">Ver Rutas</a></li>
         </ul>
       </div>
     </div>
@@ -88,7 +85,7 @@
     <div class="container">
       <h1 class="display-3 fw-bold">Monitoreo Vehicular Inteligente</h1>
       <p class="lead">Control total, eficiencia operativa y decisiones basadas en datos.</p>
-      <a href="pages/seleccionProyecto.html" class="btn btn-lg btn-primary mt-4 px-5 py-2">Comenzar Ahora</a>
+      <a href="TablaDePrecios.html" class="btn btn-lg btn-primary mt-4 px-5 py-2">Comenzar Ahora</a>
     </div>
   </header>
 
@@ -103,8 +100,7 @@
     }
   });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="backend/Routes/scriptmp.js"></script>
 </body>
 </html>
